@@ -1,36 +1,51 @@
 {% layout none %}
 {%- liquid
-  assign collection_handle = canonical_url | split: 'collection=' | last | split: '&' | first
-  assign collection = collections[collection_handle]
-  
-  if collection
-    assign products = collection.products
-  else
-    assign products = search.results
+  assign collection_handle = nil
+  if canonical_url contains 'collection='
+    assign collection_handle = canonical_url | split: 'collection=' | last | split: '&' | first
   endif
+  assign collection = collections[collection_handle]
 -%}
-{% paginate products by 250 %}
-[
-  {% for item in products %}
-    {%- liquid
-      if collection
-        assign product = item
-      else
-        if item.object_type != 'product'
-          continue
-        endif
-        assign product = item
-      endif
-      
-      assign location = product.metafields.custom.location
-    -%}
-    {
-      "id": {{ product.id | json }},
-      "title": {{ product.title | json }},
-      "url": {{ product.url | json }},
-      "image": {{ product.featured_image | img_url: 'medium' | json }},
-      "location": {{ location | json }}
-    }{% unless forloop.last %},{% endunless %}
-  {% endfor %}
-]
-{% endpaginate %}
+
+{%- if collection.handle != blank -%}
+  {%- paginate collection.products by 250 -%}
+    [
+      {%- assign first_item = true -%}
+      {%- for item in collection.products -%}
+        {%- assign location = item.metafields.custom.location.value | default: item.metafields.custom.location -%}
+        {%- if location != blank -%}
+          {%- unless first_item -%},{%- endunless -%}
+          {
+            "id": {{ item.id | json }},
+            "title": {{ item.title | json }},
+            "url": {{ item.url | json }},
+            "image": {{ item.featured_image | img_url: 'medium' | json }},
+            "location": {{ location | json }}
+          }
+          {%- assign first_item = false -%}
+        {%- endif -%}
+      {%- endfor -%}
+    ]
+  {%- endpaginate -%}
+{%- else -%}
+  {%- paginate search.results by 250 -%}
+    [
+      {%- assign first_item = true -%}
+      {%- for item in search.results -%}
+        {%- if item.object_type != 'product' -%}{%- continue -%}{%- endif -%}
+        {%- assign location = item.metafields.custom.location.value | default: item.metafields.custom.location -%}
+        {%- if location != blank -%}
+          {%- unless first_item -%},{%- endunless -%}
+          {
+            "id": {{ item.id | json }},
+            "title": {{ item.title | json }},
+            "url": {{ item.url | json }},
+            "image": {{ item.featured_image | img_url: 'medium' | json }},
+            "location": {{ location | json }}
+          }
+          {%- assign first_item = false -%}
+        {%- endif -%}
+      {%- endfor -%}
+    ]
+  {%- endpaginate -%}
+{%- endif -%}

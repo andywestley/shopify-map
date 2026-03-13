@@ -163,11 +163,12 @@
         {% if section.settings.collection != blank %}
           apiUrl += '&collection={{ section.settings.collection.handle }}';
         {% else %}
-          apiUrl += '&q=metafields.custom.location:*';
+          apiUrl += '&q=*';
         {% endif %}
         
         const response = await fetch(apiUrl);
-        const products = await response.json();
+        const data = await response.json();
+        const products = data.products || data;
         
         products.forEach(product => {
           if (product.location) {
