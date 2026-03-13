@@ -1,0 +1,90 @@
+{%- liquid
+  assign location = product.metafields.custom.location
+-%}
+
+{%- if location != blank -%}
+  {%- style -%}
+    .product-page-map-section {
+      padding: 40px 0;
+      width: 100%;
+    }
+
+    .product-page-map-container {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e8e8e8;
+      height: 300px;
+    }
+
+    #single-product-map {
+      height: 100%;
+      width: 100%;
+    }
+
+    .product-map-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  {%- endstyle -%}
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <div class="product-page-map-section page-width">
+    <span class="product-map-label">{{ section.settings.label | default: 'Product Location' }}</span>
+    <div class="product-page-map-container">
+      <div id="single-product-map"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mapElement = document.getElementById('single-product-map');
+      if (!mapElement) return;
+
+      const locString = {{ location | json }};
+      if (!locString) return;
+
+      const [lat, lng] = locString.split(',').map(n => parseFloat(n.trim()));
+      if (isNaN(lat) || isNaN(lng)) return;
+
+      const map = L.map('single-product-map', {
+        zoomControl: true,
+        scrollWheelZoom: false
+      }).setView([lat, lng], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup('<b>{{ product.title | escape }}</b>')
+        .openPopup();
+    });
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Single Product Map",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Section Label",
+      "default": "Origin Location"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Single Product Map"
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}
