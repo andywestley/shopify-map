@@ -2,8 +2,6 @@
 
 A high-performance, responsive Shopify section that plots your products on an interactive map using Leaflet.js and OpenStreetMap.
 
-![Shopify Map Demo](https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?auto=format&fit=crop&q=80&w=1000)
-
 ## Features
 - **Interactive Map**: Built with Leaflet.js and OpenStreetMap (no API keys required).
 - **Responsive Design**: Works perfectly on mobile, tablet, and desktop.
