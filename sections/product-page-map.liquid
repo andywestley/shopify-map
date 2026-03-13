@@ -28,6 +28,7 @@
       font-size: 14px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      margin-top: 0;
     }
   {%- endstyle -%}
 
@@ -35,8 +36,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <div class="product-page-map-section page-width">
-    <span class="product-map-label">{{ section.settings.label | default: 'Product Location' }}</span>
-    <div class="product-page-map-container">
+    <h3 class="product-map-label">{{ section.settings.label | default: 'Product Location' }}</h3>
+    <div class="product-page-map-container" role="region" aria-label="Map showing origin location for {{ product.title | escape }}">
       <div id="single-product-map"></div>
     </div>
   </div>

@@ -10,6 +10,7 @@ A high-performance, responsive Shopify section that plots your products on an in
 - **"Near Me" Integration**: One-click geolocation to find products near the user.
 - **Customizable Popups**: Shows product title, image, and price with a direct link to purchase.
 - **Product Page Mode**: Includes a specialized section for individual product pages to show a local map.
+- **Accessibility Optimized**: WCAG-compliant with full ARIA support, keyboard navigation, and screen-reader optimized popups.
 
 ---
 
