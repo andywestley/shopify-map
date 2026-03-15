@@ -141,7 +141,15 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<div class="product-map-section">
+{%- liquid
+  assign focus_product = section.settings.focus_product
+  assign focus_location = nil
+  if focus_product != blank
+    assign focus_location = focus_product.metafields.custom.location.value | default: focus_product.metafields.custom.location
+  endif
+-%}
+
+<div class="product-map-section" data-focus-location="{{ focus_location }}">
   <div class="section-header center">
     <h2>{{ section.settings.title }}</h2>
   </div>
@@ -179,6 +187,8 @@
     // Fetch Products
     async function loadProducts() {
       try {
+        const focusLocation = mapElement.closest('.product-map-section').dataset.focusLocation;
+        
         let apiUrl = '/search?view=product-map-api&type=product';
         {% if section.settings.collection != blank %}
           apiUrl += '&collection={{ section.settings.collection.handle }}';
@@ -211,7 +221,14 @@
           }
         });
 
-        if (markers.getLayers().length > 0) {
+        if (focusLocation) {
+          const [fLat, fLng] = focusLocation.split(',').map(n => parseFloat(n.trim()));
+          if (!isNaN(fLat) && !isNaN(fLng)) {
+            map.setView([fLat, fLng], 12);
+          } else if (markers.getLayers().length > 0) {
+            map.fitBounds(markers.getBounds(), { padding: [50, 50] });
+          }
+        } else if (markers.getLayers().length > 0) {
           map.fitBounds(markers.getBounds(), { padding: [50, 50] });
         }
       } catch (error) {
@@ -286,6 +303,12 @@
       "id": "collection",
       "label": "Filter by Collection",
       "info": "Leave blank to show all products with locations."
+    },
+    {
+      "type": "product",
+      "id": "focus_product",
+      "label": "Focus Product",
+      "info": "If selected, the map will zoom to this product initially."
     }
   ],
   "presets": [

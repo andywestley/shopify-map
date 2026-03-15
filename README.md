@@ -9,7 +9,8 @@ A high-performance, responsive Shopify section that plots your products on an in
 - **Location Search**: Users can search for locations via the Nominatim API.
 - **"Near Me" Integration**: One-click geolocation to find products near the user.
 - **Customizable Popups**: Shows product title, image, and price with a direct link to purchase.
-- **Product Page Mode**: Includes a specialized section for individual product pages to show a local map.
+- **Product Page Context**: Specialized section for product pages that shows all product locations while focusing on the current item.
+- **Focus Product Mode**: General map section includes an optional "Focus Product" setting to zoom into a specific location by default.
 - **Accessibility Optimized**: WCAG-compliant with full ARIA support, keyboard navigation, and screen-reader optimized popups.
 
 ---
