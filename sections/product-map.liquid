@@ -17,6 +17,7 @@
   }
 
   #product-map {
+    display: block;
     height: 600px;
     width: 100%;
     z-index: 1;
@@ -203,12 +204,18 @@
         script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
         script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
         script.crossOrigin = '';
-        script.onload = callback;
+        script.onload = () => {
+          script.dataset.loaded = 'true';
+          callback();
+        };
         document.head.appendChild(script);
       } else if (script.dataset.loaded === 'true' || window.L) {
         callback();
       } else {
-        script.addEventListener('load', callback, { once: true });
+        script.addEventListener('load', () => {
+          script.dataset.loaded = 'true';
+          callback();
+        }, { once: true });
       }
     }
 
@@ -218,6 +225,9 @@
 
       // Initialize Map
       const map = L.map('product-map').setView([0, 0], 2);
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 250);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap contributors'
