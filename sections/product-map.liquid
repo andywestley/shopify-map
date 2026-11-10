@@ -137,9 +137,23 @@
     padding: 4px 0;
   }
 
+  .leaflet-control-attribution {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    line-height: normal !important;
+  }
+
   .leaflet-control-attribution a,
   .leaflet-container .leaflet-control-attribution a,
   .leaflet-container a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: max(24px, 2.4rem) !important;
+    min-width: max(24px, 2.4rem) !important;
+    padding: 0.2rem 0.4rem !important;
+    box-sizing: border-box !important;
     text-decoration: underline !important;
   }
 
